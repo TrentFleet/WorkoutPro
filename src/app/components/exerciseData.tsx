@@ -2,16 +2,16 @@
 const exercises = {
   Powerlifting: {
     Shoulders: [
-      "1. Overhead Press",
-      "2. Push Press",
-      "3. Front Plate Raise",
-      "4. Lateral Raises",
-      "5. Face Pulls",
-      "6. Shrugs",
-      "7. Upright Rows",
-      "8. High Pulls",
-      "9. Power Cleans",
-      "10. Snatch",
+      "Overhead Press",
+      "Push Press",
+      "Front Plate Raise",
+      "Lateral Raises",
+      "Face Pulls",
+      "Shrugs",
+      "Upright Rows",
+      "High Pulls",
+      "Power Cleans",
+      "Snatch",
     ],
     Chest: [
       "Bench Press",

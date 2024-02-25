@@ -4,15 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { ModeToggle } from "./components/toggle";
 import exercises from "./components/exerciseData";
-import {
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-  PromiseLikeOfReactNode,
-  Key,
-  useState,
-} from "react";
+import { useState } from "react";
 import { Label } from "@/components/ui/label";
 
 // Constants
@@ -38,24 +30,24 @@ const WorkoutGenerator = () => {
     const allExercises = exercises[type][group];
     const shuffledExercises = allExercises.sort(() => Math.random() - 0.5);
     const selectedExercises = shuffledExercises.slice(0, 4);
-  
+
     // Select two random exercises for superset
     const supersetIndexes = [
       Math.floor(Math.random() * 4),
       Math.floor(Math.random() * 4),
     ];
-  
+
     // Add a superset exercise for the selected exercises
     for (const index of supersetIndexes) {
       const supersetExercise = allExercises.find(
         (_, i) => i !== index && !selectedExercises.includes(allExercises[i])
       );
-  
+
       if (supersetExercise) {
         selectedExercises[index] += ` (Superset with ${supersetExercise})`;
       }
     }
-  
+
     return selectedExercises;
   };
 
@@ -118,25 +110,25 @@ const WorkoutGenerator = () => {
 
   return (
     <div className="flex m-6 flex-col justify-center text-center sm:max-w-sm max-w-sm border-2 rounded-lg p-10 border-black shadow-md transition-transform transform mx-auto my-40 hover:scale-105">
-    <h1 className="text-3xl font-bold">
-      Workout Generator
-      <div className="justify-center flex m-2 p-2">
-        <ModeToggle />
-      </div>
-    </h1>
-    {generatedWorkout ? (
-      <div className="flex flex-col gap-4 justify-center">
-        {generatedWorkout.split(",").map((exercise, index) => (
-          <div
-            className="p-2 border-black rounded-md gap-2 border flex"
-            key={index}
-          >
-            {exercise.split("-").map((info, i) => (
-              <div key={i} className="mr-2 text-sm">
-                {info.trim()}
-              </div>
-            ))}
-          </div>
+      <h1 className="text-3xl font-bold">
+        Workout Generator
+        <div className="justify-center flex m-2 p-2">
+          <ModeToggle />
+        </div>
+      </h1>
+      {generatedWorkout ? (
+        <div className="flex flex-col gap-4 justify-center">
+          {generatedWorkout.split(",").map((exercise, index) => (
+            <div
+              className="p-2 border-black rounded-md gap-2 border flex"
+              key={index}
+            >
+              {exercise.split("-").map((info, i) => (
+                <div key={i} className="mr-2 text-sm">
+                  {info.trim()}
+                </div>
+              ))}
+            </div>
           ))}
           <div>
             <Button
@@ -218,6 +210,7 @@ const WorkoutGenerator = () => {
         </Form>
       )}
     </div>
+    
   );
 };
 
