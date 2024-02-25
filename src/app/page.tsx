@@ -1,7 +1,7 @@
 "use client";
 
-
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import { ModeToggle } from "./components/toggle";
 import exercises from "./components/exerciseData";
 import {
@@ -13,7 +13,7 @@ import {
   Key,
   useState,
 } from "react";
-
+import { Label } from "@/components/ui/label";
 
 // Constants
 const LOW_INTENSITY_SETS_RANGE = [1, 4];
@@ -117,7 +117,7 @@ const WorkoutGenerator = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center text-center x-sm:mx-6 sm:max-w-sm max-w-lg border-2 rounded-lg p-10 border-black shadow-md transition-transform transform mx-auto my-40 hover:scale-105">
+    <div className="flex m-6 flex-col justify-center text-center sm:max-w-sm max-w-sm border-2 rounded-lg p-10 border-black shadow-md transition-transform transform mx-auto my-40 hover:scale-105">
     <h1 className="text-3xl font-bold">
       Workout Generator
       <div className="justify-center flex m-2 p-2">
@@ -159,8 +159,8 @@ const WorkoutGenerator = () => {
           </div>
         </div>
       ) : (
-        <form className="flex justify-center flex-col items-center">
-          <label className="mb-2">
+        <Form>
+          <Label className="mb-2">
             Workout Type
             <select
               value={workoutType}
@@ -174,9 +174,9 @@ const WorkoutGenerator = () => {
                 </option>
               ))}
             </select>
-          </label>
+          </Label>
 
-          <label className="mb-2">
+          <Label className="mb-2">
             Muscle Group
             <select
               value={muscleGroup}
@@ -190,9 +190,9 @@ const WorkoutGenerator = () => {
                 </option>
               ))}
             </select>
-          </label>
+          </Label>
 
-          <label className="mb-2">
+          <Label className="mb-2">
             Intensity
             <select
               value={intensity}
@@ -203,7 +203,7 @@ const WorkoutGenerator = () => {
               <option value="Low">Low</option>
               <option value="High">High</option>
             </select>
-          </label>
+          </Label>
           {/* ... (form elements) */}
           <Button
             type="button"
@@ -215,7 +215,7 @@ const WorkoutGenerator = () => {
           >
             {isLoading ? "Generating..." : "Generate Workout"}
           </Button>
-        </form>
+        </Form>
       )}
     </div>
   );
