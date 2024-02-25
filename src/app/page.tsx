@@ -159,7 +159,6 @@ const WorkoutGenerator = () => {
           </div>
         </div>
       ) : (
-        
         <Form>
           <Label className="mb-2">
             Workout Type
