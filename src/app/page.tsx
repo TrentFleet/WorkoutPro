@@ -1,113 +1,224 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { ModeToggle } from "./components/toggle";
+import exercises from "./components/exerciseData";
+import {
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+  PromiseLikeOfReactNode,
+  Key,
+  useState,
+} from "react";
+import { Label } from "@/components/ui/label";
+
+// Constants
+const LOW_INTENSITY_SETS_RANGE = [1, 4];
+const LOW_INTENSITY_REPS_RANGE = [4, 10];
+const HIGH_INTENSITY_SETS_RANGE = [4, 8];
+const HIGH_INTENSITY_REPS_RANGE = [10, 16];
+
+const WorkoutGenerator = () => {
+  const [workoutType, setWorkoutType] = useState("");
+  const [muscleGroup, setMuscleGroup] = useState("");
+  const [intensity, setIntensity] = useState("");
+  const [generatedWorkout, setGeneratedWorkout] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Added loading state
+
+  const workoutTypes = ["Powerlifting", "Bodybuilding", "Crossfit"];
+  const muscleGroups = ["Shoulders", "Chest", "Arms", "Legs", "Core"];
+
+  const generateRandomExercise = (
+    type: keyof typeof exercises,
+    group: keyof (typeof exercises)[keyof typeof exercises]
+  ) => {
+    const allExercises = exercises[type][group];
+    const shuffledExercises = allExercises.sort(() => Math.random() - 0.5);
+    const selectedExercises = shuffledExercises.slice(0, 4);
+  
+    // Select two random exercises for superset
+    const supersetIndexes = [
+      Math.floor(Math.random() * 4),
+      Math.floor(Math.random() * 4),
+    ];
+  
+    // Add a superset exercise for the selected exercises
+    for (const index of supersetIndexes) {
+      const supersetExercise = allExercises.find(
+        (_, i) => i !== index && !selectedExercises.includes(allExercises[i])
+      );
+  
+      if (supersetExercise) {
+        selectedExercises[index] += ` (Superset with ${supersetExercise})`;
+      }
+    }
+  
+    return selectedExercises;
+  };
+
+  const generateRandomSetsReps = (intensity: string) => {
+    let sets, reps;
+
+    if (intensity === "Low") {
+      sets =
+        Math.floor(
+          Math.random() *
+            (LOW_INTENSITY_SETS_RANGE[1] - LOW_INTENSITY_SETS_RANGE[0] + 1)
+        ) + LOW_INTENSITY_SETS_RANGE[0];
+      reps =
+        Math.floor(
+          Math.random() *
+            (LOW_INTENSITY_REPS_RANGE[1] - LOW_INTENSITY_REPS_RANGE[0] + 1)
+        ) + LOW_INTENSITY_REPS_RANGE[0];
+    } else if (intensity === "High") {
+      sets =
+        Math.floor(
+          Math.random() *
+            (HIGH_INTENSITY_SETS_RANGE[1] - HIGH_INTENSITY_SETS_RANGE[0] + 1)
+        ) + HIGH_INTENSITY_SETS_RANGE[0];
+      reps =
+        Math.floor(
+          Math.random() *
+            (HIGH_INTENSITY_REPS_RANGE[1] - HIGH_INTENSITY_REPS_RANGE[0] + 1)
+        ) + HIGH_INTENSITY_REPS_RANGE[0];
+    }
+
+    return { sets, reps };
+  };
+
+  const handleGenerateWorkout = () => {
+    setIsLoading(true); // Set loading state to true
+
+    setTimeout(() => {
+      let workout = "";
+
+      if (workoutType && muscleGroup && intensity) {
+        const exercises = generateRandomExercise(
+          workoutType as "Powerlifting" | "Bodybuilding" | "Crossfit",
+          muscleGroup as keyof (typeof exercises)[keyof typeof exercises]
+        );
+
+        const exercisesWithSetsReps = exercises.map((exercise: any) => {
+          const { sets, reps } = generateRandomSetsReps(intensity);
+          return `${exercise}, Sets: ${sets} - Reps: ${reps}`;
+        });
+
+        workout = exercisesWithSetsReps.join(", ");
+      } else {
+        workout = "Please select workout type, muscle group, and intensity.";
+      }
+
+      setGeneratedWorkout(workout);
+      setIsLoading(false); // Set loading state back to false
+    }, 1000); // Simulating a delay, replace with actual logic or API call
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-col justify-center text-center x-sm:mx-6 sm:max-w-sm max-w-lg border-2 rounded-lg p-10 border-black shadow-md transition-transform transform mx-auto my-40 hover:scale-105">
+    <h1 className="text-3xl font-bold">
+      Workout Generator
+      <div className="justify-center flex m-2 p-2">
+        <ModeToggle />
+      </div>
+    </h1>
+    {generatedWorkout ? (
+      <div className="flex flex-col gap-4 justify-center">
+        {generatedWorkout.split(",").map((exercise, index) => (
+          <div
+            className="p-2 border-black rounded-md gap-2 border flex"
+            key={index}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            {exercise.split("-").map((info, i) => (
+              <div key={i} className="mr-2 text-sm">
+                {info.trim()}
+              </div>
+            ))}
+          </div>
+          ))}
+          <div>
+            <Button
+              type="button"
+              onClick={handleGenerateWorkout}
+              className={`gap-2 p-2 m-2 bg-blue-600 text-white hover:bg-gray-800 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={isLoading} // Disable the button when loading
+            >
+              {isLoading ? "Generating..." : "Generate Another Workout"}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setGeneratedWorkout("")}
+              className="gap-2 p-2 m-2 text-white hover:bg-gray-800"
+            >
+              Start Over
+            </Button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <Form>
+          <Label className="mb-2">
+            Workout Type
+            <select
+              value={workoutType}
+              onChange={(e) => setWorkoutType(e.target.value)}
+              className="m-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
+            >
+              <option value="">Select</option>
+              {workoutTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </Label>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+          <Label className="mb-2">
+            Muscle Group
+            <select
+              value={muscleGroup}
+              onChange={(e) => setMuscleGroup(e.target.value)}
+              className="m-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
+            >
+              <option value="">Select</option>
+              {muscleGroups.map((group) => (
+                <option key={group} value={group}>
+                  {group}
+                </option>
+              ))}
+            </select>
+          </Label>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <Label className="mb-2">
+            Intensity
+            <select
+              value={intensity}
+              onChange={(e) => setIntensity(e.target.value)}
+              className="m-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="">Select</option>
+              <option value="Low">Low</option>
+              <option value="High">High</option>
+            </select>
+          </Label>
+          {/* ... (form elements) */}
+          <Button
+            type="button"
+            onClick={handleGenerateWorkout}
+            className={`bg-blue-500 text-white p-2 rounded hover:bg-blue-700 focus:outline-none ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Generating..." : "Generate Workout"}
+          </Button>
+        </Form>
+      )}
+    </div>
   );
-}
+};
+
+export default WorkoutGenerator;
