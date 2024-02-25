@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { ModeToggle } from "./components/toggle";
 import exercises from "./components/exerciseData";
 import {
@@ -13,7 +12,7 @@ import {
   Key,
   useState,
 } from "react";
-import { Label } from "@/components/ui/label";
+
 
 // Constants
 const LOW_INTENSITY_SETS_RANGE = [1, 4];
@@ -159,8 +158,8 @@ const WorkoutGenerator = () => {
           </div>
         </div>
       ) : (
-        <Form>
-          <Label className="mb-2">
+        <form className="flex justify-center flex-col items-center">
+          <label className="mb-2">
             Workout Type
             <select
               value={workoutType}
@@ -174,9 +173,9 @@ const WorkoutGenerator = () => {
                 </option>
               ))}
             </select>
-          </Label>
+          </label>
 
-          <Label className="mb-2">
+          <label className="mb-2">
             Muscle Group
             <select
               value={muscleGroup}
@@ -190,9 +189,9 @@ const WorkoutGenerator = () => {
                 </option>
               ))}
             </select>
-          </Label>
+          </label>
 
-          <Label className="mb-2">
+          <label className="mb-2">
             Intensity
             <select
               value={intensity}
@@ -203,7 +202,7 @@ const WorkoutGenerator = () => {
               <option value="Low">Low</option>
               <option value="High">High</option>
             </select>
-          </Label>
+          </label>
           {/* ... (form elements) */}
           <Button
             type="button"
@@ -215,7 +214,7 @@ const WorkoutGenerator = () => {
           >
             {isLoading ? "Generating..." : "Generate Workout"}
           </Button>
-        </Form>
+        </form>
       )}
     </div>
   );
