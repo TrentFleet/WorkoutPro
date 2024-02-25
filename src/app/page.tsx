@@ -1,5 +1,6 @@
 "use client";
 
+import { Form } from 'react-hook-form';
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./components/toggle";
 import exercises from "./components/exerciseData";
@@ -158,7 +159,7 @@ const WorkoutGenerator = () => {
           </div>
         </div>
       ) : (
-        <form className="flex justify-center flex-col items-center">
+        <Form className="flex justify-center flex-col items-center">
           <label className="mb-2">
             Workout Type
             <select
@@ -214,7 +215,7 @@ const WorkoutGenerator = () => {
           >
             {isLoading ? "Generating..." : "Generate Workout"}
           </Button>
-        </form>
+        </Form>
       )}
     </div>
   );
