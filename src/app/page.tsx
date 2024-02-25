@@ -14,6 +14,7 @@ import {
   useState,
 } from "react";
 import { Label } from "@/components/ui/label";
+import { useForm, FormProvider } from 'react-hook-form';
 
 // Constants
 const LOW_INTENSITY_SETS_RANGE = [1, 4];
@@ -159,6 +160,7 @@ const WorkoutGenerator = () => {
           </div>
         </div>
       ) : (
+        
         <Form>
           <Label className="mb-2">
             Workout Type
